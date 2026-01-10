@@ -55,7 +55,7 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-start md:items-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -66,15 +66,15 @@ export default function Home() {
             priority
             quality={90}
           />
-          {/* Gradient Overlays - lighter on mobile bottom to show surfer */}
-          <div className="absolute inset-0 bg-gradient-to-b from-ocean-950/90 via-ocean-950/40 to-ocean-950/30 md:from-ocean-950/60 md:via-ocean-950/20 md:to-ocean-950/60" />
-          <div className="absolute inset-0 bg-gradient-to-r from-ocean-950/80 via-ocean-950/30 to-transparent md:from-ocean-950/80 md:via-ocean-950/30 md:to-transparent" />
+          {/* Gradient Overlays - only cover left side on mobile to show surfer on right */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ocean-950/80 via-transparent to-ocean-950/60 md:from-ocean-950/60 md:via-ocean-950/20 md:to-ocean-950/60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ocean-950/95 via-ocean-950/70 to-transparent md:from-ocean-950/80 md:via-ocean-950/30 md:to-transparent" />
         </div>
 
-        {/* Content - Left aligned, compact on mobile to show surfer below */}
-        <div className="relative z-10 w-full px-6 md:px-8 lg:px-12 pt-24 pb-8 md:pt-0 md:pb-0">
+        {/* Content - Left aligned, narrow on mobile to show surfer on right */}
+        <div className="relative z-10 w-full px-5 md:px-8 lg:px-12 pt-20 md:pt-0">
           <div className="max-w-7xl mx-auto">
-            <div className="max-w-xl lg:max-w-2xl">
+            <div className="max-w-[65%] sm:max-w-[55%] md:max-w-xl lg:max-w-2xl">
               {/* Location Tags */}
               <div className="flex flex-wrap justify-start gap-2 mb-6 opacity-0 animate-fade-in-down">
                 {locations.map((location) => (
