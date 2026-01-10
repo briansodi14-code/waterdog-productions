@@ -55,72 +55,77 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
             src="/images/IMG_4419.JPG"
             alt="Surfer riding a wave - Waterdog Productions"
             fill
-            className="object-cover"
+            className="object-cover object-right md:object-center"
+            style={{ objectPosition: '75% center' }}
             priority
             quality={90}
           />
-          {/* Gradient Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-b from-ocean-950/70 via-ocean-950/40 to-ocean-950/80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-ocean-950/50 via-transparent to-ocean-950/50" />
+          {/* Gradient Overlays - stronger on left for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ocean-950/80 via-ocean-950/30 to-ocean-950/70 md:from-ocean-950/60 md:via-ocean-950/20 md:to-ocean-950/60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ocean-950/90 via-ocean-950/40 to-transparent md:from-ocean-950/80 md:via-ocean-950/30 md:to-transparent" />
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 text-center px-6 md:px-8 max-w-5xl mx-auto">
-          {/* Location Tags */}
-          <div className="flex flex-wrap justify-center gap-3 mb-8 opacity-0 animate-fade-in-down">
-            {locations.map((location) => (
-              <span
-                key={location}
-                className="px-4 py-1.5 text-xs font-medium tracking-wider uppercase bg-white/10 backdrop-blur-sm rounded-full text-white/90 border border-white/20"
-              >
-                {location}
-              </span>
-            ))}
-          </div>
+        {/* Content - Left aligned */}
+        <div className="relative z-10 w-full px-6 md:px-8 lg:px-12 pt-24 pb-32 md:pt-0 md:pb-0">
+          <div className="max-w-7xl mx-auto">
+            <div className="max-w-xl lg:max-w-2xl">
+              {/* Location Tags */}
+              <div className="flex flex-wrap justify-start gap-2 mb-6 opacity-0 animate-fade-in-down">
+                {locations.map((location) => (
+                  <span
+                    key={location}
+                    className="px-3 py-1 text-xs font-medium tracking-wider uppercase bg-white/10 backdrop-blur-sm rounded-full text-white/90 border border-white/20"
+                  >
+                    {location}
+                  </span>
+                ))}
+              </div>
 
-          {/* Main Heading */}
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 opacity-0 animate-fade-in-up tracking-tight">
-            In the Water.
-            <br />
-            <span className="text-teal-400">In the Moment.</span>
-          </h1>
+              {/* Main Heading */}
+              <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6 opacity-0 animate-fade-in-up tracking-tight text-left">
+                In the Water.
+                <br />
+                <span className="text-teal-400">In the Moment.</span>
+              </h1>
 
-          {/* Subheading */}
-          <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto opacity-0 animate-fade-in-up animation-delay-200 leading-relaxed">
-            Professional in-water surf photography capturing your best waves
-            from inside the action. Based in Huntington Beach, CA.
-          </p>
+              {/* Subheading */}
+              <p className="text-base md:text-lg lg:text-xl text-white/80 mb-8 opacity-0 animate-fade-in-up animation-delay-200 leading-relaxed text-left max-w-lg">
+                Professional in-water surf photography capturing your best waves
+                from inside the action. Based in Huntington Beach, CA.
+              </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 opacity-0 animate-fade-in-up animation-delay-400">
-            <Link href="/gallery" className="btn-primary">
-              Find Your Photos
-            </Link>
-            <Link href="/book" className="btn-outline-light">
-              Book a Session
-            </Link>
-          </div>
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 opacity-0 animate-fade-in-up animation-delay-400">
+                <Link href="/gallery" className="btn-primary">
+                  Find Your Photos
+                </Link>
+                <Link href="/book" className="btn-outline-light">
+                  Book a Session
+                </Link>
+              </div>
 
-          {/* Pricing Badge */}
-          <div className="mt-12 opacity-0 animate-fade-in animation-delay-600">
-            <span className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full text-white/90 border border-white/20">
-              <span className="text-sm">Photos starting at</span>
-              <span className="font-display font-bold text-teal-400">$5/image</span>
-              <span className="text-white/40">|</span>
-              <span className="font-display font-bold text-teal-400">5 for $20</span>
-            </span>
+              {/* Pricing Badge */}
+              <div className="mt-8 md:mt-10 opacity-0 animate-fade-in animation-delay-600">
+                <span className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 backdrop-blur-sm rounded-full text-white/90 border border-white/20 text-sm">
+                  <span>Photos starting at</span>
+                  <span className="font-display font-bold text-teal-400">$5/image</span>
+                  <span className="text-white/40">|</span>
+                  <span className="font-display font-bold text-teal-400">5 for $20</span>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-float">
+        {/* Scroll Indicator - moved to left on desktop */}
+        <div className="absolute bottom-8 left-6 md:left-12 lg:left-16 animate-float">
           <div className="flex flex-col items-center gap-2 text-white/50">
             <span className="text-xs uppercase tracking-widest">Scroll</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
