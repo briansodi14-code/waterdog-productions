@@ -55,25 +55,24 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section className="relative min-h-screen flex items-start md:items-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
             src="/images/IMG_4419.JPG"
             alt="Surfer riding a wave - Waterdog Productions"
             fill
-            className="object-cover object-right md:object-center"
-            style={{ objectPosition: '75% center' }}
+            className="object-cover hero-image"
             priority
             quality={90}
           />
-          {/* Gradient Overlays - stronger on left for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-ocean-950/80 via-ocean-950/30 to-ocean-950/70 md:from-ocean-950/60 md:via-ocean-950/20 md:to-ocean-950/60" />
-          <div className="absolute inset-0 bg-gradient-to-r from-ocean-950/90 via-ocean-950/40 to-transparent md:from-ocean-950/80 md:via-ocean-950/30 md:to-transparent" />
+          {/* Gradient Overlays - lighter on mobile bottom to show surfer */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ocean-950/90 via-ocean-950/40 to-ocean-950/30 md:from-ocean-950/60 md:via-ocean-950/20 md:to-ocean-950/60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ocean-950/80 via-ocean-950/30 to-transparent md:from-ocean-950/80 md:via-ocean-950/30 md:to-transparent" />
         </div>
 
-        {/* Content - Left aligned */}
-        <div className="relative z-10 w-full px-6 md:px-8 lg:px-12 pt-24 pb-32 md:pt-0 md:pb-0">
+        {/* Content - Left aligned, compact on mobile to show surfer below */}
+        <div className="relative z-10 w-full px-6 md:px-8 lg:px-12 pt-24 pb-8 md:pt-0 md:pb-0">
           <div className="max-w-7xl mx-auto">
             <div className="max-w-xl lg:max-w-2xl">
               {/* Location Tags */}
