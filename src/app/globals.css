@@ -174,7 +174,7 @@
 
 /* Hero image positioning - show surfer on all screen sizes */
 .hero-image {
-  object-position: 85% center; /* Mobile: shift image left so surfer appears on right of viewport */
+  object-position: center center; /* Mobile: baseline - let's see where surfer sits */
 }
 
 @media (min-width: 768px) {
