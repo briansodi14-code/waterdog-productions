@@ -2,26 +2,172 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #0b4a6f;
+    --ocean-dark: #072f49;
+    --ocean-medium: #0b4a6f;
+    --ocean-light: #016aa3;
+    --teal-accent: #14b8a6;
+    --sand-light: #f7f3ef;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    color: var(--foreground);
+    background: var(--background);
+  }
+
+  ::selection {
+    background-color: #14b8a6;
+    color: white;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white
+           bg-ocean-800 rounded-full transition-all duration-300 ease-out
+           hover:bg-ocean-700 hover:scale-105 hover:shadow-lg hover:shadow-ocean-800/25
+           focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2
+           active:scale-100;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-8 py-4 text-base font-semibold
+           text-ocean-900 bg-white border-2 border-ocean-200 rounded-full
+           transition-all duration-300 ease-out
+           hover:bg-ocean-50 hover:border-ocean-400 hover:scale-105
+           focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2
+           active:scale-100;
+  }
+
+  .btn-outline-light {
+    @apply inline-flex items-center justify-center px-8 py-4 text-base font-semibold
+           text-white bg-transparent border-2 border-white/50 rounded-full
+           transition-all duration-300 ease-out
+           hover:bg-white/10 hover:border-white hover:scale-105
+           focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-ocean-900
+           active:scale-100;
+  }
+
+  .section-padding {
+    @apply px-6 py-20 md:px-8 md:py-28 lg:px-12 lg:py-32;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .heading-display {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight;
+  }
+
+  .heading-section {
+    @apply text-3xl md:text-4xl font-bold tracking-tight;
+  }
+
+  .text-body {
+    @apply text-lg text-ocean-700/80 leading-relaxed;
+  }
+
+  .card-hover {
+    @apply transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-2xl;
+  }
+
+  .image-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-ocean-950/80 via-ocean-950/20 to-transparent;
+  }
+
+  .nav-link {
+    @apply relative text-sm font-medium tracking-wide transition-colors duration-300
+           after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5
+           after:bg-current after:transition-all after:duration-300
+           hover:after:w-full;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+
+  .animation-delay-800 {
+    animation-delay: 800ms;
+  }
+
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-ocean-600 via-teal-500 to-ocean-700;
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  }
+
+  .glass-dark {
+    @apply bg-ocean-950/80 backdrop-blur-md border border-white/10;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f7f3ef;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0b4a6f;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #016aa3;
+}
+
+/* Image hover effects */
+.image-zoom {
+  overflow: hidden;
+}
+
+.image-zoom img {
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.image-zoom:hover img {
+  transform: scale(1.08);
+}
+
+/* Fade in animation for intersection observer */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
