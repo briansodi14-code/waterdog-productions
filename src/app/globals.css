@@ -174,7 +174,7 @@
 
 /* Hero image positioning - show surfer on all screen sizes */
 .hero-image {
-  object-position: right center; /* Mobile: surfer on right side */
+  object-position: 65% center; /* Mobile: bring surfer into frame from right */
 }
 
 @media (min-width: 768px) {
