@@ -201,15 +201,15 @@ export default function AboutPage() {
         <div className="container-custom px-6 md:px-8 lg:px-12">
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-[1fr_2fr] gap-12 items-center">
-              {/* Photo Placeholder */}
+              {/* Chase's Photo */}
               <div className="relative">
-                <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-ocean-200 to-teal-100 flex items-center justify-center">
-                  <div className="text-center p-6">
-                    <svg className="w-16 h-16 mx-auto text-ocean-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <p className="text-sm text-ocean-600">Photographer photo coming soon</p>
-                  </div>
+                <div className="aspect-square rounded-2xl overflow-hidden shadow-lg ring-4 ring-white">
+                  <Image
+                    src="/images/IMG_1108.jpg"
+                    alt="Chase - Waterdog Productions photographer"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
               </div>
 

@@ -5,20 +5,24 @@ import Image from "next/image";
 import Link from "next/link";
 
 const allPhotos = [
-  { id: 1, src: "/images/IMG_4419.JPG", date: "2024-01-08", location: "HB Pier" },
-  { id: 2, src: "/images/IMG_4317.JPG", date: "2024-01-08", location: "HB Pier" },
-  { id: 3, src: "/images/IMG_4279.JPG", date: "2024-01-07", location: "Newport" },
-  { id: 4, src: "/images/IMG_4280.JPG", date: "2024-01-07", location: "Newport" },
-  { id: 5, src: "/images/IMG_4320.JPG", date: "2024-01-06", location: "San Clemente" },
-  { id: 6, src: "/images/IMG_4340.JPG", date: "2024-01-06", location: "San Clemente" },
-  { id: 7, src: "/images/IMG_4366.JPG", date: "2024-01-05", location: "Laguna" },
-  { id: 8, src: "/images/IMG_4381.JPG", date: "2024-01-05", location: "Laguna" },
-  { id: 9, src: "/images/IMG_4392.JPG", date: "2024-01-04", location: "HB Pier" },
-  { id: 10, src: "/images/IMG_4400.JPG", date: "2024-01-04", location: "HB Pier" },
+  { id: 1, src: "/images/DSC00351.JPG", date: "2024-01-09", location: "HB Pier" },
+  { id: 2, src: "/images/DSC00352.JPG", date: "2024-01-09", location: "HB Pier" },
+  { id: 3, src: "/images/DSC00353.JPG", date: "2024-01-09", location: "HB Pier" },
+  { id: 4, src: "/images/DSC00354.JPG", date: "2024-01-09", location: "HB Pier" },
+  { id: 5, src: "/images/IMG_4419.JPG", date: "2024-01-08", location: "HB Pier" },
+  { id: 6, src: "/images/IMG_4317.JPG", date: "2024-01-08", location: "HB Pier" },
+  { id: 7, src: "/images/IMG_4279.JPG", date: "2024-01-07", location: "Newport" },
+  { id: 8, src: "/images/IMG_4280.JPG", date: "2024-01-07", location: "Newport" },
+  { id: 9, src: "/images/IMG_4320.JPG", date: "2024-01-06", location: "San Clemente" },
+  { id: 10, src: "/images/IMG_4340.JPG", date: "2024-01-06", location: "San Clemente" },
+  { id: 11, src: "/images/IMG_4366.JPG", date: "2024-01-05", location: "Laguna" },
+  { id: 12, src: "/images/IMG_4381.JPG", date: "2024-01-05", location: "Laguna" },
+  { id: 13, src: "/images/IMG_4392.JPG", date: "2024-01-04", location: "HB Pier" },
+  { id: 14, src: "/images/IMG_4400.JPG", date: "2024-01-04", location: "HB Pier" },
 ];
 
 const locations = ["All Locations", "HB Pier", "Newport", "San Clemente", "Laguna"];
-const dates = ["All Dates", "2024-01-08", "2024-01-07", "2024-01-06", "2024-01-05", "2024-01-04"];
+const dates = ["All Dates", "2024-01-09", "2024-01-08", "2024-01-07", "2024-01-06", "2024-01-05", "2024-01-04"];
 
 export default function GalleryPage() {
   const [selectedLocation, setSelectedLocation] = useState("All Locations");

@@ -2,14 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 const galleryImages = [
-  { src: "/images/IMG_4419.JPG", alt: "Surfer catching a wave" },
+  { src: "/images/DSC00352.JPG", alt: "Surfer aerial with pier and blue sky" },
+  { src: "/images/DSC00353.JPG", alt: "Action shot at the pier" },
+  { src: "/images/DSC00354.JPG", alt: "Surfer catching air near the pier" },
   { src: "/images/IMG_4317.JPG", alt: "In-water surf action shot" },
   { src: "/images/IMG_4279.JPG", alt: "Barrel shot from inside the wave" },
   { src: "/images/IMG_4280.JPG", alt: "Surfer on a perfect wave" },
   { src: "/images/IMG_4340.JPG", alt: "Dynamic surf photography" },
   { src: "/images/IMG_4366.JPG", alt: "Water-level surf shot" },
-  { src: "/images/IMG_4381.JPG", alt: "Surfer carving" },
-  { src: "/images/IMG_4392.JPG", alt: "Ocean wave photography" },
 ];
 
 const services = [
@@ -59,8 +59,8 @@ export default function Home() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="/images/IMG_4419.JPG"
-            alt="Surfer riding a wave - Waterdog Productions"
+            src="/images/DSC00351.JPG"
+            alt="Surfer doing an air with pier and blue sky - Waterdog Productions"
             fill
             className="object-cover hero-image"
             priority
