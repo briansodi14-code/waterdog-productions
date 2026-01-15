@@ -202,15 +202,17 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-[1fr_2fr] gap-12 items-center">
               {/* Chase's Photo */}
-              <div className="relative">
-                <div className="aspect-square rounded-2xl overflow-hidden shadow-lg ring-4 ring-white">
-                  <Image
-                    src="/images/IMG_1108.jpg"
-                    alt="Chase - Waterdog Productions photographer"
-                    fill
-                    className="object-cover scale-[1.6]"
-                    style={{ objectPosition: "center 20%" }}
-                  />
+              <div className="relative max-w-[280px] md:max-w-[400px] mx-auto md:mx-0">
+                <div className="aspect-square rounded-2xl shadow-lg ring-4 ring-white overflow-hidden">
+                  <div className="relative w-full h-full overflow-hidden">
+                    <Image
+                      src="/images/IMG_1108.jpg"
+                      alt="Chase - Waterdog Productions photographer"
+                      fill
+                      className="object-cover scale-[1.6]"
+                      style={{ objectPosition: "center 20%" }}
+                    />
+                  </div>
                 </div>
               </div>
 
