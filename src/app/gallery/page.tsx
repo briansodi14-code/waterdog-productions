@@ -70,7 +70,7 @@ export default function GalleryPage() {
 
   // Get unique dates from photos for filter dropdown
   const dates = useMemo(() => {
-    const uniqueDates = [...new Set(photos.map((p) => p.date))].sort().reverse();
+    const uniqueDates = Array.from(new Set(photos.map((p) => p.date))).sort().reverse();
     return ["All Dates", ...uniqueDates];
   }, [photos]);
 
