@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getFeaturedPhotos, urlFor } from "@/lib/sanity";
 
-const galleryImages = [
+// Fallback static images when Sanity is empty
+const staticGalleryImages = [
   { src: "/images/DSC00352.JPG", alt: "Surfer aerial with pier and blue sky" },
   { src: "/images/DSC00353.JPG", alt: "Action shot at the pier" },
   { src: "/images/DSC00354.JPG", alt: "Surfer catching air near the pier" },
@@ -51,7 +53,23 @@ const services = [
 
 const locations = ["HB Pier", "Newport", "San Clemente", "Laguna"];
 
-export default function Home() {
+export default async function Home() {
+  // Fetch featured photos from Sanity
+  let galleryImages = staticGalleryImages;
+
+  try {
+    const featuredPhotos = await getFeaturedPhotos();
+    if (featuredPhotos && featuredPhotos.length > 0) {
+      galleryImages = featuredPhotos.slice(0, 8).map((photo) => ({
+        src: urlFor(photo.image).width(800).url(),
+        alt: `Surf photo at ${photo.location}`,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching featured photos:", error);
+    // Fall back to static images
+  }
+
   return (
     <>
       {/* Hero Section */}

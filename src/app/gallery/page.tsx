@@ -1,42 +1,88 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { getPhotos, urlFor, SanityPhoto } from "@/lib/sanity";
 
-const allPhotos = [
-  { id: 1, src: "/images/DSC00351.JPG", date: "2024-01-09", location: "HB Pier" },
-  { id: 2, src: "/images/DSC00352.JPG", date: "2024-01-09", location: "HB Pier" },
-  { id: 3, src: "/images/DSC00353.JPG", date: "2024-01-09", location: "HB Pier" },
-  { id: 4, src: "/images/DSC00354.JPG", date: "2024-01-09", location: "HB Pier" },
-  { id: 5, src: "/images/IMG_4419.JPG", date: "2024-01-08", location: "HB Pier" },
-  { id: 6, src: "/images/IMG_4317.JPG", date: "2024-01-08", location: "HB Pier" },
-  { id: 7, src: "/images/IMG_4279.JPG", date: "2024-01-07", location: "Newport" },
-  { id: 8, src: "/images/IMG_4280.JPG", date: "2024-01-07", location: "Newport" },
-  { id: 9, src: "/images/IMG_4320.JPG", date: "2024-01-06", location: "San Clemente" },
-  { id: 10, src: "/images/IMG_4340.JPG", date: "2024-01-06", location: "San Clemente" },
-  { id: 11, src: "/images/IMG_4366.JPG", date: "2024-01-05", location: "Laguna" },
-  { id: 12, src: "/images/IMG_4381.JPG", date: "2024-01-05", location: "Laguna" },
-  { id: 13, src: "/images/IMG_4392.JPG", date: "2024-01-04", location: "HB Pier" },
-  { id: 14, src: "/images/IMG_4400.JPG", date: "2024-01-04", location: "HB Pier" },
+// Fallback static photos when Sanity is empty
+const staticPhotos = [
+  { id: 1, src: "/images/DSC00351.JPG", date: "2024-01-09", location: "HB Pier" as const },
+  { id: 2, src: "/images/DSC00352.JPG", date: "2024-01-09", location: "HB Pier" as const },
+  { id: 3, src: "/images/DSC00353.JPG", date: "2024-01-09", location: "HB Pier" as const },
+  { id: 4, src: "/images/DSC00354.JPG", date: "2024-01-09", location: "HB Pier" as const },
+  { id: 5, src: "/images/IMG_4419.JPG", date: "2024-01-08", location: "HB Pier" as const },
+  { id: 6, src: "/images/IMG_4317.JPG", date: "2024-01-08", location: "HB Pier" as const },
+  { id: 7, src: "/images/IMG_4279.JPG", date: "2024-01-07", location: "Newport" as const },
+  { id: 8, src: "/images/IMG_4280.JPG", date: "2024-01-07", location: "Newport" as const },
+  { id: 9, src: "/images/IMG_4320.JPG", date: "2024-01-06", location: "San Clemente" as const },
+  { id: 10, src: "/images/IMG_4340.JPG", date: "2024-01-06", location: "San Clemente" as const },
+  { id: 11, src: "/images/IMG_4366.JPG", date: "2024-01-05", location: "Laguna" as const },
+  { id: 12, src: "/images/IMG_4381.JPG", date: "2024-01-05", location: "Laguna" as const },
+  { id: 13, src: "/images/IMG_4392.JPG", date: "2024-01-04", location: "HB Pier" as const },
+  { id: 14, src: "/images/IMG_4400.JPG", date: "2024-01-04", location: "HB Pier" as const },
 ];
 
+interface Photo {
+  id: string | number;
+  src: string;
+  date: string;
+  location: "HB Pier" | "Newport" | "San Clemente" | "Laguna";
+}
+
 const locations = ["All Locations", "HB Pier", "Newport", "San Clemente", "Laguna"];
-const dates = ["All Dates", "2024-01-09", "2024-01-08", "2024-01-07", "2024-01-06", "2024-01-05", "2024-01-04"];
 
 export default function GalleryPage() {
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [selectedDate, setSelectedDate] = useState("All Dates");
-  const [selectedPhoto, setSelectedPhoto] = useState<typeof allPhotos[0] | null>(null);
-  const [cart, setCart] = useState<number[]>([]);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [cart, setCart] = useState<(string | number)[]>([]);
 
-  const filteredPhotos = allPhotos.filter((photo) => {
-    const matchesLocation = selectedLocation === "All Locations" || photo.location === selectedLocation;
-    const matchesDate = selectedDate === "All Dates" || photo.date === selectedDate;
-    return matchesLocation && matchesDate;
-  });
+  // Fetch photos from Sanity on mount
+  useEffect(() => {
+    async function fetchPhotos() {
+      try {
+        const sanityPhotos = await getPhotos();
+        if (sanityPhotos && sanityPhotos.length > 0) {
+          const formattedPhotos: Photo[] = sanityPhotos.map((photo: SanityPhoto) => ({
+            id: photo._id,
+            src: urlFor(photo.image).width(800).url(),
+            date: photo.date,
+            location: photo.location,
+          }));
+          setPhotos(formattedPhotos);
+        } else {
+          // Fallback to static photos if Sanity is empty
+          setPhotos(staticPhotos);
+        }
+      } catch (error) {
+        console.error("Error fetching photos from Sanity:", error);
+        // Fallback to static photos on error
+        setPhotos(staticPhotos);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPhotos();
+  }, []);
 
-  const toggleCart = (photoId: number) => {
+  // Get unique dates from photos for filter dropdown
+  const dates = useMemo(() => {
+    const uniqueDates = [...new Set(photos.map((p) => p.date))].sort().reverse();
+    return ["All Dates", ...uniqueDates];
+  }, [photos]);
+
+  const filteredPhotos = useMemo(() => {
+    return photos.filter((photo) => {
+      const matchesLocation = selectedLocation === "All Locations" || photo.location === selectedLocation;
+      const matchesDate = selectedDate === "All Dates" || photo.date === selectedDate;
+      return matchesLocation && matchesDate;
+    });
+  }, [photos, selectedLocation, selectedDate]);
+
+  const toggleCart = (photoId: string | number) => {
     setCart((prev) =>
       prev.includes(photoId)
         ? prev.filter((id) => id !== photoId)
@@ -125,7 +171,7 @@ export default function GalleryPage() {
               </div>
 
               <span className="text-sm text-ocean-600">
-                {filteredPhotos.length} photo{filteredPhotos.length !== 1 ? "s" : ""}
+                {loading ? "Loading..." : `${filteredPhotos.length} photo${filteredPhotos.length !== 1 ? "s" : ""}`}
               </span>
             </div>
 
@@ -163,7 +209,12 @@ export default function GalleryPage() {
       {/* Gallery Grid */}
       <section className="section-padding bg-white">
         <div className="container-custom px-6 md:px-8 lg:px-12">
-          {filteredPhotos.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ocean-600 mx-auto mb-4"></div>
+              <p className="text-ocean-600">Loading photos...</p>
+            </div>
+          ) : filteredPhotos.length === 0 ? (
             <div className="text-center py-16">
               <svg
                 className="w-16 h-16 mx-auto text-ocean-300 mb-4"
