@@ -208,7 +208,8 @@ export default function AboutPage() {
                     src="/images/IMG_1108.jpg"
                     alt="Chase - Waterdog Productions photographer"
                     fill
-                    className="object-cover"
+                    className="object-cover scale-[1.6]"
+                    style={{ objectPosition: "center 20%" }}
                   />
                 </div>
               </div>
