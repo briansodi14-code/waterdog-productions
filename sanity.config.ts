@@ -1,6 +1,7 @@
 import { defineConfig } from "sanity";
 import { deskTool } from "sanity/desk";
 import { schemaTypes } from "./src/sanity/schemas";
+import { bulkUploadTool } from "./src/sanity/tools/bulkUpload";
 
 export default defineConfig({
   name: "waterdog-productions",
@@ -12,4 +13,5 @@ export default defineConfig({
   schema: {
     types: schemaTypes,
   },
+  tools: [bulkUploadTool],
 });
