@@ -7,43 +7,43 @@ const packages = [
   {
     name: "Dawn Patrol",
     duration: "1 hour",
-    price: 150,
+    price: 40,
     description: "Perfect for the early morning session. One hour of dedicated coverage at your favorite break.",
     features: [
       "1 hour in-water coverage",
-      "20+ edited photos delivered",
+      "40+ edited photos delivered",
       "Digital delivery within 48 hours",
       "Print-ready high resolution",
     ],
+    videoAddon: 10,
     popular: false,
   },
   {
     name: "Full Session",
     duration: "2 hours",
-    price: 250,
+    price: 70,
     description: "Our most popular package. Extended coverage to capture your best waves across multiple sets.",
     features: [
       "2 hours in-water coverage",
-      "40+ edited photos delivered",
+      "80+ edited photos delivered",
       "Digital delivery within 48 hours",
       "Print-ready high resolution",
-      "Social media edits included",
     ],
+    videoAddon: 15,
     popular: true,
   },
   {
     name: "Epic Day",
-    duration: "4 hours",
-    price: 400,
+    duration: "3 hours",
+    price: 100,
     description: "For when the conditions are firing. Full morning or evening session coverage.",
     features: [
-      "4 hours in-water coverage",
-      "80+ edited photos delivered",
+      "3 hours in-water coverage",
+      "120+ edited photos delivered",
       "Priority digital delivery (24 hours)",
       "Print-ready high resolution",
-      "Social media edits included",
-      "Short video clips",
     ],
+    videoAddon: 20,
     popular: false,
   },
 ];
@@ -152,7 +152,7 @@ export default function BookPage() {
                   {pkg.description}
                 </p>
 
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-3 mb-4">
                   {pkg.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm text-ocean-700">
                       <svg className="w-5 h-5 text-teal-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,6 +162,8 @@ export default function BookPage() {
                     </li>
                   ))}
                 </ul>
+
+                <p className="text-sm text-teal-600 text-center mt-4 mb-4">+ Video clips: ${pkg.videoAddon}</p>
 
                 <button
                   onClick={() => {
@@ -377,7 +379,7 @@ export default function BookPage() {
                 },
                 {
                   q: "Do you shoot video?",
-                  a: "The Epic Day package includes short video clips. For full video coverage, contact me for custom pricing.",
+                  a: "Yes! Video clips of your session are available as an add-on to any package. Pricing is $10 for Dawn Patrol, $15 for Full Session, and $20 for Epic Day sessions.",
                 },
               ].map((faq, i) => (
                 <div key={i} className="bg-white rounded-xl p-6">
