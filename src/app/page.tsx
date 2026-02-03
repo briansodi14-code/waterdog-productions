@@ -2,6 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { getFeaturedPhotos, urlFor } from "@/lib/sanity";
 
+// Revalidate homepage every 60 seconds so featured photos stay fresh
+export const revalidate = 60;
+
 // Fallback static images when Sanity is empty
 const staticGalleryImages = [
   { src: "/images/DSC00352.JPG", alt: "Surfer aerial with pier and blue sky" },

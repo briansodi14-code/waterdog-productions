@@ -56,5 +56,5 @@ export async function getPhotos(): Promise<SanityPhoto[]> {
 }
 
 export async function getFeaturedPhotos(): Promise<SanityPhoto[]> {
-  return client.fetch(featuredPhotosQuery);
+  return client.fetch(featuredPhotosQuery, {}, { next: { revalidate: 60 } });
 }
