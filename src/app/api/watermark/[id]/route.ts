@@ -41,23 +41,16 @@ export async function GET(
     const w = imgW || width;
     const h = imgH || Math.round(width * 0.75);
 
-    // Scale watermark text to image size — large enough to deter theft
-    const fontSize = Math.max(Math.floor(w / 7), 48);
-    const strokeWidth = Math.max(Math.floor(fontSize / 12), 2);
-    const spacingX = fontSize * 4;
-    const spacingY = fontSize * 2.5;
+    // Scale watermark — large, dark, and impossible to miss
+    const fontSize = Math.max(Math.floor(w / 6), 56);
+    const spacingX = fontSize * 3.5;
+    const spacingY = fontSize * 2;
 
-    // Tile watermark text across the entire image in a diagonal pattern
-    // Each text element is rendered twice: dark stroke behind, white fill on top
+    // Tile dark watermark text across the entire image
     let watermarkTexts = "";
     for (let y = -spacingY; y < h + spacingY; y += spacingY) {
       for (let x = -spacingX; x < w + spacingX; x += spacingX) {
-        const rot = `rotate(-30, ${x}, ${y})`;
-        const attrs = `x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" transform="${rot}"`;
-        // Dark outline for visibility on bright areas (sky, white water)
-        watermarkTexts += `<text ${attrs} class="wm-stroke">WATERDOG</text>`;
-        // White fill on top
-        watermarkTexts += `<text ${attrs} class="wm-fill">WATERDOG</text>`;
+        watermarkTexts += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" transform="rotate(-30, ${x}, ${y})" class="wm">WATERDOG</text>`;
       }
     }
 
@@ -65,20 +58,13 @@ export async function GET(
       <svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <style>
-            .wm-stroke {
+            .wm {
               font-family: Arial, Helvetica, sans-serif;
-              font-weight: bold;
+              font-weight: 900;
               font-size: ${fontSize}px;
-              fill: none;
-              stroke: rgba(0, 0, 0, 0.4);
-              stroke-width: ${strokeWidth}px;
-            }
-            .wm-fill {
-              font-family: Arial, Helvetica, sans-serif;
-              font-weight: bold;
-              font-size: ${fontSize}px;
-              fill: rgba(255, 255, 255, 0.6);
-              stroke: none;
+              fill: rgba(0, 0, 0, 0.35);
+              stroke: rgba(255, 255, 255, 0.15);
+              stroke-width: 1px;
             }
           </style>
         </defs>
