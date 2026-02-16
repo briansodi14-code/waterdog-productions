@@ -3,32 +3,33 @@
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { getPhotos, urlFor, SanityPhoto } from "@/lib/sanity";
-
-// Fallback static photos when Sanity is empty
-const staticPhotos = [
-  { id: 1, src: "/images/DSC00351.JPG", date: "2024-01-09", location: "HB Pier" as const },
-  { id: 2, src: "/images/DSC00352.JPG", date: "2024-01-09", location: "HB Pier" as const },
-  { id: 3, src: "/images/DSC00353.JPG", date: "2024-01-09", location: "HB Pier" as const },
-  { id: 4, src: "/images/DSC00354.JPG", date: "2024-01-09", location: "HB Pier" as const },
-  { id: 5, src: "/images/IMG_4419.JPG", date: "2024-01-08", location: "HB Pier" as const },
-  { id: 6, src: "/images/IMG_4317.JPG", date: "2024-01-08", location: "HB Pier" as const },
-  { id: 7, src: "/images/IMG_4279.JPG", date: "2024-01-07", location: "Newport" as const },
-  { id: 8, src: "/images/IMG_4280.JPG", date: "2024-01-07", location: "Newport" as const },
-  { id: 9, src: "/images/IMG_4320.JPG", date: "2024-01-06", location: "San Clemente" as const },
-  { id: 10, src: "/images/IMG_4340.JPG", date: "2024-01-06", location: "San Clemente" as const },
-  { id: 11, src: "/images/IMG_4366.JPG", date: "2024-01-05", location: "Laguna" as const },
-  { id: 12, src: "/images/IMG_4381.JPG", date: "2024-01-05", location: "Laguna" as const },
-  { id: 13, src: "/images/IMG_4392.JPG", date: "2024-01-04", location: "HB Pier" as const },
-  { id: 14, src: "/images/IMG_4400.JPG", date: "2024-01-04", location: "HB Pier" as const },
-];
+import { getPhotos, SanityPhoto } from "@/lib/sanity";
 
 interface Photo {
   id: string | number;
   src: string;
+  largeSrc: string;
   date: string;
   location: "HB Pier" | "Newport" | "San Clemente" | "Laguna";
 }
+
+// Fallback static photos when Sanity is empty
+const staticPhotos: Photo[] = [
+  { id: 1, src: "/images/DSC00351.JPG", largeSrc: "/images/DSC00351.JPG", date: "2024-01-09", location: "HB Pier" },
+  { id: 2, src: "/images/DSC00352.JPG", largeSrc: "/images/DSC00352.JPG", date: "2024-01-09", location: "HB Pier" },
+  { id: 3, src: "/images/DSC00353.JPG", largeSrc: "/images/DSC00353.JPG", date: "2024-01-09", location: "HB Pier" },
+  { id: 4, src: "/images/DSC00354.JPG", largeSrc: "/images/DSC00354.JPG", date: "2024-01-09", location: "HB Pier" },
+  { id: 5, src: "/images/IMG_4419.JPG", largeSrc: "/images/IMG_4419.JPG", date: "2024-01-08", location: "HB Pier" },
+  { id: 6, src: "/images/IMG_4317.JPG", largeSrc: "/images/IMG_4317.JPG", date: "2024-01-08", location: "HB Pier" },
+  { id: 7, src: "/images/IMG_4279.JPG", largeSrc: "/images/IMG_4279.JPG", date: "2024-01-07", location: "Newport" },
+  { id: 8, src: "/images/IMG_4280.JPG", largeSrc: "/images/IMG_4280.JPG", date: "2024-01-07", location: "Newport" },
+  { id: 9, src: "/images/IMG_4320.JPG", largeSrc: "/images/IMG_4320.JPG", date: "2024-01-06", location: "San Clemente" },
+  { id: 10, src: "/images/IMG_4340.JPG", largeSrc: "/images/IMG_4340.JPG", date: "2024-01-06", location: "San Clemente" },
+  { id: 11, src: "/images/IMG_4366.JPG", largeSrc: "/images/IMG_4366.JPG", date: "2024-01-05", location: "Laguna" },
+  { id: 12, src: "/images/IMG_4381.JPG", largeSrc: "/images/IMG_4381.JPG", date: "2024-01-05", location: "Laguna" },
+  { id: 13, src: "/images/IMG_4392.JPG", largeSrc: "/images/IMG_4392.JPG", date: "2024-01-04", location: "HB Pier" },
+  { id: 14, src: "/images/IMG_4400.JPG", largeSrc: "/images/IMG_4400.JPG", date: "2024-01-04", location: "HB Pier" },
+];
 
 const locations = ["All Locations", "HB Pier", "Newport", "San Clemente", "Laguna"];
 
@@ -48,7 +49,8 @@ export default function GalleryPage() {
         if (sanityPhotos && sanityPhotos.length > 0) {
           const formattedPhotos: Photo[] = sanityPhotos.map((photo: SanityPhoto) => ({
             id: photo._id,
-            src: urlFor(photo.image).width(800).url(),
+            src: `/api/watermark/${photo._id}?w=400`,
+            largeSrc: `/api/watermark/${photo._id}?w=1200`,
             date: photo.date,
             location: photo.location,
           }));
@@ -251,13 +253,6 @@ export default function GalleryPage() {
                     sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   />
 
-                  {/* Watermark Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <span className="text-white/30 font-display font-bold text-xl rotate-[-30deg]">
-                      WATERDOG
-                    </span>
-                  </div>
-
                   {/* Hover Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-ocean-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -320,17 +315,11 @@ export default function GalleryPage() {
               {/* Image */}
               <div className="relative aspect-square md:aspect-auto md:h-[600px] bg-sand-100">
                 <Image
-                  src={selectedPhoto.src}
+                  src={selectedPhoto.largeSrc}
                   alt={`Surf photo at ${selectedPhoto.location}`}
                   fill
                   className="object-contain"
                 />
-                {/* Watermark */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="text-white/20 font-display font-bold text-4xl rotate-[-30deg]">
-                    WATERDOG
-                  </span>
-                </div>
               </div>
 
               {/* Details */}

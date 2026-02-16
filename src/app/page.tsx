@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getFeaturedPhotos, urlFor } from "@/lib/sanity";
+import { getFeaturedPhotos } from "@/lib/sanity";
 
 // Revalidate homepage every 60 seconds so featured photos stay fresh
 export const revalidate = 60;
@@ -64,7 +64,7 @@ export default async function Home() {
     const featuredPhotos = await getFeaturedPhotos();
     if (featuredPhotos && featuredPhotos.length > 0) {
       galleryImages = featuredPhotos.slice(0, 8).map((photo) => ({
-        src: urlFor(photo.image).width(800).url(),
+        src: `/api/watermark/${photo._id}?w=600`,
         alt: `Surf photo at ${photo.location}`,
       }));
     }
