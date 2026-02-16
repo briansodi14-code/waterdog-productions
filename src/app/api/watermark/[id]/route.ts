@@ -4,33 +4,154 @@ import { client } from "@/lib/sanity";
 
 const CACHE_DURATION = 86400; // 24 hours
 
-// Create diagonal stripe pattern using raw pixel manipulation — no SVG
-async function createStripeOverlay(w: number, h: number): Promise<Buffer> {
-  // Create a raw RGBA buffer with diagonal stripes
+// Bitmap font for "WATERDOG" — each letter is 5 wide x 7 tall (1 = pixel on)
+const FONT: Record<string, number[][]> = {
+  W: [
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,0,1,0,1],
+    [1,0,1,0,1],
+    [1,1,0,1,1],
+    [1,0,0,0,1],
+  ],
+  A: [
+    [0,1,1,1,0],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,1,1,1,1],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+  ],
+  T: [
+    [1,1,1,1,1],
+    [0,0,1,0,0],
+    [0,0,1,0,0],
+    [0,0,1,0,0],
+    [0,0,1,0,0],
+    [0,0,1,0,0],
+    [0,0,1,0,0],
+  ],
+  E: [
+    [1,1,1,1,1],
+    [1,0,0,0,0],
+    [1,0,0,0,0],
+    [1,1,1,1,0],
+    [1,0,0,0,0],
+    [1,0,0,0,0],
+    [1,1,1,1,1],
+  ],
+  R: [
+    [1,1,1,1,0],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,1,1,1,0],
+    [1,0,1,0,0],
+    [1,0,0,1,0],
+    [1,0,0,0,1],
+  ],
+  D: [
+    [1,1,1,1,0],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,1,1,1,0],
+  ],
+  O: [
+    [0,1,1,1,0],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [0,1,1,1,0],
+  ],
+  G: [
+    [0,1,1,1,0],
+    [1,0,0,0,1],
+    [1,0,0,0,0],
+    [1,0,1,1,1],
+    [1,0,0,0,1],
+    [1,0,0,0,1],
+    [0,1,1,1,0],
+  ],
+};
+
+const WORD = "WATERDOG";
+
+// Draw "WATERDOG" text into a raw RGBA buffer at given position and scale
+function drawText(
+  pixels: Buffer,
+  imgW: number,
+  startX: number,
+  startY: number,
+  scale: number,
+  r: number,
+  g: number,
+  b: number,
+  alpha: number
+) {
+  let cursorX = startX;
+  const letterSpacing = 1; // 1 cell gap between letters
+
+  for (const char of WORD) {
+    const glyph = FONT[char];
+    if (!glyph) continue;
+
+    for (let row = 0; row < 7; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (glyph[row][col] === 1) {
+          // Draw a scaled block for each "on" pixel
+          for (let sy = 0; sy < scale; sy++) {
+            for (let sx = 0; sx < scale; sx++) {
+              const px = cursorX + col * scale + sx;
+              const py = startY + row * scale + sy;
+              if (px >= 0 && px < imgW && py >= 0) {
+                const idx = (py * imgW + px) * 4;
+                if (idx >= 0 && idx + 3 < pixels.length) {
+                  pixels[idx] = r;
+                  pixels[idx + 1] = g;
+                  pixels[idx + 2] = b;
+                  pixels[idx + 3] = alpha;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    cursorX += (5 + letterSpacing) * scale;
+  }
+}
+
+// Create full watermark overlay with tiled "WATERDOG" text — zero SVG
+function createWatermarkOverlay(w: number, h: number): Buffer {
   const pixels = Buffer.alloc(w * h * 4, 0); // Start fully transparent
 
-  const stripeWidth = Math.max(Math.floor(w / 8), 40);
-  const stripeSpacing = stripeWidth * 3;
+  // Scale text based on image width
+  const scale = Math.max(Math.floor(w / 80), 3);
+  const textWidth = (5 * 8 + 7) * scale; // 8 letters, 7 gaps
+  const textHeight = 7 * scale;
 
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      // Diagonal stripe: (x + y) mod spacing determines if we're in a stripe
-      const pos = (x + y) % stripeSpacing;
-      if (pos < stripeWidth) {
-        const idx = (y * w + x) * 4;
-        pixels[idx] = 0;       // R
-        pixels[idx + 1] = 0;   // G
-        pixels[idx + 2] = 0;   // B
-        pixels[idx + 3] = 70;  // Alpha (~27% opacity)
-      }
+  // Spacing between repetitions
+  const spacingX = textWidth + scale * 12;
+  const spacingY = textHeight + scale * 14;
+
+  // Tile across the image with offset rows for diagonal feel
+  for (let row = -1; row * spacingY < h + spacingY; row++) {
+    const offsetX = (row % 2) * Math.floor(spacingX / 2); // Stagger every other row
+    for (let col = -1; col * spacingX < w + spacingX; col++) {
+      const x = col * spacingX + offsetX;
+      const y = row * spacingY;
+      // Dark text with some transparency
+      drawText(pixels, w, x, y, scale, 0, 0, 0, 90);
     }
   }
 
-  return sharp(pixels, {
-    raw: { width: w, height: h, channels: 4 },
-  })
-    .png()
-    .toBuffer();
+  return pixels;
 }
 
 export async function GET(
@@ -68,11 +189,17 @@ export async function GET(
     const imgWidth = metadata.width || width;
     const imgHeight = metadata.height || 600;
 
-    // Create watermark using ONLY sharp native operations — zero SVG
-    const stripeOverlay = await createStripeOverlay(imgWidth, imgHeight);
+    // Create text watermark using raw pixels — no SVG
+    const watermarkPixels = createWatermarkOverlay(imgWidth, imgHeight);
+    const watermarkPng = await sharp(watermarkPixels, {
+      raw: { width: imgWidth, height: imgHeight, channels: 4 },
+    })
+      .png()
+      .toBuffer();
 
+    // Composite onto the photo
     const result = await sharp(resizedBuffer)
-      .composite([{ input: stripeOverlay, blend: "over", top: 0, left: 0 }])
+      .composite([{ input: watermarkPng, blend: "over", top: 0, left: 0 }])
       .jpeg({ quality: 85 })
       .toBuffer();
 
