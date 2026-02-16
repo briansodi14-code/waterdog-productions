@@ -4,20 +4,6 @@ import { client } from "@/lib/sanity";
 
 const CACHE_DURATION = 86400; // 24 hours
 
-// Pre-built tiny 1x1 dark pixel, tiled to create overlay — no SVG involved
-async function createDarkOverlay(w: number, h: number): Promise<Buffer> {
-  return sharp({
-    create: {
-      width: w,
-      height: h,
-      channels: 4,
-      background: { r: 0, g: 0, b: 0, alpha: 90 },
-    },
-  })
-    .png()
-    .toBuffer();
-}
-
 // Create diagonal stripe pattern using raw pixel manipulation — no SVG
 async function createStripeOverlay(w: number, h: number): Promise<Buffer> {
   // Create a raw RGBA buffer with diagonal stripes
