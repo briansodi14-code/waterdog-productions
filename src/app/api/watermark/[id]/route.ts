@@ -31,42 +31,58 @@ export async function GET(
 
     const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
 
-    // Resize first
+    // Resize the photo
     const resizedBuffer = await sharp(imageBuffer)
       .resize(width, null, { withoutEnlargement: true, fit: "inside" })
       .toBuffer();
 
-    // Get dimensions of resized image
     const metadata = await sharp(resizedBuffer).metadata();
     const imgWidth = metadata.width || width;
     const imgHeight = metadata.height || 600;
 
-    // Build tiled watermark SVG with inline attributes (no CSS)
-    const fontSize = Math.max(Math.floor(imgWidth / 6), 60);
-    const spacingX = fontSize * 4;
-    const spacingY = fontSize * 2.5;
+    // --- Approach: SVG pattern rendered to PNG, then composited ---
+    const fontSize = Math.max(Math.floor(imgWidth / 5), 80);
 
-    let textElements = "";
-    for (let y = Math.floor(spacingY / 2); y < imgHeight + spacingY; y += spacingY) {
-      for (let x = Math.floor(spacingX / 2); x < imgWidth + spacingX; x += spacingX) {
-        textElements += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" transform="rotate(-30, ${x}, ${y})" font-family="Arial, Helvetica, sans-serif" font-size="${fontSize}" font-weight="900" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.3)" stroke-width="2">WATERDOG</text>`;
-      }
+    const svgImage = `<svg width="${imgWidth}" height="${imgHeight}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="wm" patternUnits="userSpaceOnUse" width="${fontSize * 5}" height="${fontSize * 3}" patternTransform="rotate(-30)">
+      <text x="${fontSize * 2.5}" y="${fontSize * 1.5}" font-family="Arial Black, Arial, sans-serif" font-size="${fontSize}px" font-weight="900" fill="#000000" fill-opacity="0.35" text-anchor="middle" dominant-baseline="middle">WATERDOG</text>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#wm)"/>
+</svg>`;
+
+    let watermarkPng: Buffer;
+    try {
+      watermarkPng = await sharp(Buffer.from(svgImage))
+        .ensureAlpha()
+        .png({ compressionLevel: 0 })
+        .toBuffer();
+      console.log("SVG watermark PNG size:", watermarkPng.length);
+    } catch (svgError) {
+      console.error("SVG render failed, using fallback:", svgError);
+      // Fallback: solid semi-transparent dark overlay (no SVG needed)
+      watermarkPng = await sharp({
+        create: {
+          width: imgWidth,
+          height: imgHeight,
+          channels: 4,
+          background: { r: 0, g: 0, b: 0, alpha: 80 },
+        },
+      })
+        .png()
+        .toBuffer();
     }
 
-    const svgBuffer = Buffer.from(
-      `<svg width="${imgWidth}" height="${imgHeight}" xmlns="http://www.w3.org/2000/svg">${textElements}</svg>`
-    );
-
-    // Convert SVG to PNG first — direct SVG compositing silently fails
-    const watermarkPng = await sharp(svgBuffer).png().toBuffer();
-
-    // Composite the PNG watermark onto the photo
-    const watermarkedImage = await sharp(resizedBuffer)
-      .composite([{ input: watermarkPng, top: 0, left: 0 }])
+    // Composite watermark onto the photo
+    const result = await sharp(resizedBuffer)
+      .composite([{ input: watermarkPng, blend: "over", top: 0, left: 0 }])
       .jpeg({ quality: 85 })
       .toBuffer();
 
-    return new Response(watermarkedImage, {
+    console.log("Final image size:", result.length);
+
+    return new Response(result, {
       headers: {
         "Content-Type": "image/jpeg",
         "Cache-Control": `public, max-age=${CACHE_DURATION}, s-maxage=${CACHE_DURATION}`,
@@ -76,6 +92,6 @@ export async function GET(
     });
   } catch (error) {
     console.error("Watermark error:", error);
-    return new NextResponse("Error processing image", { status: 500 });
+    return new NextResponse(`Error: ${error}`, { status: 500 });
   }
 }
