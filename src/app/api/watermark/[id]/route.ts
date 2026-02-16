@@ -70,7 +70,7 @@ export async function GET(
       .jpeg({ quality: 80, progressive: true })
       .toBuffer();
 
-    return new NextResponse(watermarkedImage, {
+    return new NextResponse(new Uint8Array(watermarkedImage), {
       headers: {
         "Content-Type": "image/jpeg",
         "Cache-Control": `public, max-age=${CACHE_DURATION}, s-maxage=${CACHE_DURATION}`,
