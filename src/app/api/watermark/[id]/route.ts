@@ -76,7 +76,7 @@ export async function GET(
       .jpeg({ quality: 85 })
       .toBuffer();
 
-    return new Response(result, {
+    return new Response(new Uint8Array(result), {
       headers: {
         "Content-Type": "image/jpeg",
         "Cache-Control": `public, max-age=${CACHE_DURATION}, s-maxage=${CACHE_DURATION}`,
