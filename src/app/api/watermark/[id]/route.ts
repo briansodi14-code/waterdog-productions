@@ -31,53 +31,42 @@ export async function GET(
 
     const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
 
-    // Resize first so watermark SVG matches the output dimensions
-    const resized = sharp(imageBuffer).resize(width, null, {
-      withoutEnlargement: true,
-      fit: "inside",
-    });
-    const resizedBuffer = await resized.toBuffer();
-    const { width: imgW, height: imgH } = await sharp(resizedBuffer).metadata();
-    const w = imgW || width;
-    const h = imgH || Math.round(width * 0.75);
+    // Resize first
+    const resizedBuffer = await sharp(imageBuffer)
+      .resize(width, null, { withoutEnlargement: true, fit: "inside" })
+      .toBuffer();
 
-    // Scale watermark — large, dark, and impossible to miss
-    const fontSize = Math.max(Math.floor(w / 6), 56);
-    const spacingX = fontSize * 3.5;
-    const spacingY = fontSize * 2;
+    // Get dimensions of resized image
+    const metadata = await sharp(resizedBuffer).metadata();
+    const imgWidth = metadata.width || width;
+    const imgHeight = metadata.height || 600;
 
-    // Tile dark watermark text across the entire image
-    let watermarkTexts = "";
-    for (let y = -spacingY; y < h + spacingY; y += spacingY) {
-      for (let x = -spacingX; x < w + spacingX; x += spacingX) {
-        watermarkTexts += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" transform="rotate(-30, ${x}, ${y})" class="wm">WATERDOG</text>`;
+    // Build tiled watermark SVG with inline attributes (no CSS)
+    const fontSize = Math.max(Math.floor(imgWidth / 6), 60);
+    const spacingX = fontSize * 4;
+    const spacingY = fontSize * 2.5;
+
+    let textElements = "";
+    for (let y = Math.floor(spacingY / 2); y < imgHeight + spacingY; y += spacingY) {
+      for (let x = Math.floor(spacingX / 2); x < imgWidth + spacingX; x += spacingX) {
+        textElements += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" transform="rotate(-30, ${x}, ${y})" font-family="Arial, Helvetica, sans-serif" font-size="${fontSize}" font-weight="900" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.3)" stroke-width="2">WATERDOG</text>`;
       }
     }
 
-    const watermarkSvg = Buffer.from(`
-      <svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <style>
-            .wm {
-              font-family: Arial, Helvetica, sans-serif;
-              font-weight: 900;
-              font-size: ${fontSize}px;
-              fill: rgba(0, 0, 0, 0.35);
-              stroke: rgba(255, 255, 255, 0.15);
-              stroke-width: 1px;
-            }
-          </style>
-        </defs>
-        ${watermarkTexts}
-      </svg>
-    `);
+    const svgBuffer = Buffer.from(
+      `<svg width="${imgWidth}" height="${imgHeight}" xmlns="http://www.w3.org/2000/svg">${textElements}</svg>`
+    );
 
+    // Convert SVG to PNG first — direct SVG compositing silently fails
+    const watermarkPng = await sharp(svgBuffer).png().toBuffer();
+
+    // Composite the PNG watermark onto the photo
     const watermarkedImage = await sharp(resizedBuffer)
-      .composite([{ input: watermarkSvg, gravity: "center" }])
-      .jpeg({ quality: 80, progressive: true })
+      .composite([{ input: watermarkPng, top: 0, left: 0 }])
+      .jpeg({ quality: 85 })
       .toBuffer();
 
-    return new NextResponse(new Uint8Array(watermarkedImage), {
+    return new Response(watermarkedImage, {
       headers: {
         "Content-Type": "image/jpeg",
         "Cache-Control": `public, max-age=${CACHE_DURATION}, s-maxage=${CACHE_DURATION}`,
