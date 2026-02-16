@@ -181,12 +181,12 @@ export default async function Home() {
                   index === 0 ? "md:col-span-2 md:row-span-2" : ""
                 }`}
               >
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={image.src}
                   alt={image.alt}
-                  fill
-                  className="object-cover"
-                  sizes={index === 0 ? "(max-width: 768px) 50vw, 50vw" : "(max-width: 768px) 50vw, 25vw"}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
                 {/* Hover Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-ocean-950/80 via-ocean-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4 md:p-6">

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { getPhotos, SanityPhoto } from "@/lib/sanity";
 
@@ -245,12 +244,12 @@ export default function GalleryPage() {
                   className="group relative aspect-square rounded-xl overflow-hidden bg-sand-100 cursor-pointer"
                   onClick={() => setSelectedPhoto(photo)}
                 >
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={photo.src}
                     alt={`Surf photo at ${photo.location}`}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
 
                   {/* Hover Overlay */}
@@ -314,11 +313,11 @@ export default function GalleryPage() {
             <div className="grid md:grid-cols-[2fr_1fr]">
               {/* Image */}
               <div className="relative aspect-square md:aspect-auto md:h-[600px] bg-sand-100">
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={selectedPhoto.largeSrc}
                   alt={`Surf photo at ${selectedPhoto.location}`}
-                  fill
-                  className="object-contain"
+                  className="absolute inset-0 w-full h-full object-contain"
                 />
               </div>
 
