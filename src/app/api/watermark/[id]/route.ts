@@ -41,10 +41,19 @@ export async function GET(
     const w = imgW || width;
     const h = imgH || Math.round(width * 0.75);
 
-    // Scale watermark text to image size
-    const fontSize = Math.max(Math.floor(w / 12), 28);
+    // Scale watermark text to image size — large enough to deter theft
+    const fontSize = Math.max(Math.floor(w / 8), 40);
+    const spacingX = fontSize * 5;
+    const spacingY = fontSize * 3;
 
-    // SVG watermark with repeated diagonal text for strong coverage
+    // Tile watermark text across the entire image in a diagonal pattern
+    let watermarkTexts = "";
+    for (let y = -spacingY; y < h + spacingY; y += spacingY) {
+      for (let x = -spacingX; x < w + spacingX; x += spacingX) {
+        watermarkTexts += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" transform="rotate(-30, ${x}, ${y})" class="wm">WATERDOG</text>`;
+      }
+    }
+
     const watermarkSvg = Buffer.from(`
       <svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -53,15 +62,11 @@ export async function GET(
               font-family: Arial, Helvetica, sans-serif;
               font-weight: bold;
               font-size: ${fontSize}px;
-              fill: rgba(255, 255, 255, 0.3);
+              fill: rgba(255, 255, 255, 0.5);
             }
           </style>
         </defs>
-        <g transform="rotate(-30, ${w / 2}, ${h / 2})">
-          <text x="50%" y="35%" text-anchor="middle" dominant-baseline="middle" class="wm">WATERDOG</text>
-          <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" class="wm">WATERDOG</text>
-          <text x="50%" y="75%" text-anchor="middle" dominant-baseline="middle" class="wm">WATERDOG</text>
-        </g>
+        ${watermarkTexts}
       </svg>
     `);
 
