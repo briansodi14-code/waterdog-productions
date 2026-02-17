@@ -1,14 +1,53 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
 export default function CartPage() {
   const { items, removeItem, clearCart, itemCount, totalPrice } = useCart();
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const bundles = Math.floor(itemCount / 5);
   const remainder = itemCount % 5;
   const savings = itemCount >= 5 ? bundles * 5 : 0;
+
+  const handleCheckout = async () => {
+    if (!email || !email.includes("@")) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items,
+          customerEmail: email,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      setError("Something went wrong. Please try again.");
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -89,7 +128,9 @@ export default function CartPage() {
                       {(item.location || item.date) && (
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-ocean-950/70 to-transparent p-3 pt-8">
                           {item.location && (
-                            <p className="text-white/80 text-xs">{item.location}</p>
+                            <p className="text-white/80 text-xs">
+                              {item.location}
+                            </p>
                           )}
                           {item.date && (
                             <p className="text-white text-xs font-medium">
@@ -175,7 +216,7 @@ export default function CartPage() {
                     )}
                   </div>
 
-                  <div className="border-t border-sand-200 pt-4 mb-6">
+                  <div className="border-t border-sand-200 pt-4 mb-4">
                     <div className="flex justify-between">
                       <span className="text-lg font-semibold text-ocean-900">
                         Total
@@ -186,23 +227,44 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  <button
-                    className="w-full btn-primary py-3 text-center rounded-xl font-semibold"
-                    disabled
-                  >
-                    Checkout Coming Soon
-                  </button>
-                  <p className="text-xs text-ocean-500 text-center mt-3">
-                    Payment processing coming soon. For now, DM us on{" "}
-                    <a
-                      href="https://instagram.com/waterdogproductions"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-teal-600 hover:text-teal-700"
+                  <div className="mb-4">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-ocean-800 mb-2"
                     >
-                      Instagram
-                    </a>{" "}
-                    to purchase.
+                      Email for delivery *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (error) setError("");
+                      }}
+                      placeholder="you@example.com"
+                      className="w-full px-4 py-3 rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-transparent text-ocean-900"
+                      required
+                    />
+                    <p className="text-xs text-ocean-500 mt-1">
+                      Download link will be sent here
+                    </p>
+                  </div>
+
+                  {error && (
+                    <p className="text-red-500 text-sm mb-3">{error}</p>
+                  )}
+
+                  <button
+                    onClick={handleCheckout}
+                    disabled={isLoading || itemCount === 0}
+                    className="w-full btn-primary py-3 text-center rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? "Processing..." : `Checkout — $${totalPrice}`}
+                  </button>
+
+                  <p className="text-xs text-ocean-500 text-center mt-3">
+                    Secure payment powered by Stripe
                   </p>
                 </div>
               </div>
