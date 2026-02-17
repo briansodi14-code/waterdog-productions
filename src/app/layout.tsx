@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { CartProvider } from "@/context/CartContext";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -62,9 +63,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} ${inter.variable}`}>
       <body className="font-sans antialiased">
-        <Navigation />
-        <main>{children}</main>
-        <Footer />
+        <CartProvider>
+          <Navigation />
+          <main>{children}</main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

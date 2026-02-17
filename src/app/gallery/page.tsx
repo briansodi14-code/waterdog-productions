@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { getPhotos, SanityPhoto } from "@/lib/sanity";
+import { useCart } from "@/context/CartContext";
 
 interface Photo {
   id: string | number;
@@ -38,7 +39,7 @@ export default function GalleryPage() {
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [selectedDate, setSelectedDate] = useState("All Dates");
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
-  const [cart, setCart] = useState<(string | number)[]>([]);
+  const { addItem, removeItem, isInCart, itemCount, totalPrice } = useCart();
 
   // Fetch photos from Sanity on mount
   useEffect(() => {
@@ -83,23 +84,17 @@ export default function GalleryPage() {
     });
   }, [photos, selectedLocation, selectedDate]);
 
-  const toggleCart = (photoId: string | number) => {
-    setCart((prev) =>
-      prev.includes(photoId)
-        ? prev.filter((id) => id !== photoId)
-        : [...prev, photoId]
-    );
-  };
-
-  const getPrice = () => {
-    const count = cart.length;
-    if (count === 0) return 0;
-    if (count >= 5) {
-      const bundles = Math.floor(count / 5);
-      const remainder = count % 5;
-      return bundles * 20 + remainder * 5;
+  const toggleCart = (photo: Photo) => {
+    if (isInCart(String(photo.id))) {
+      removeItem(String(photo.id));
+    } else {
+      addItem({
+        id: String(photo.id),
+        imageUrl: photo.src,
+        location: photo.location,
+        date: photo.date,
+      });
     }
-    return count * 5;
   };
 
   return (
@@ -177,18 +172,21 @@ export default function GalleryPage() {
             </div>
 
             {/* Cart Summary */}
-            {cart.length > 0 && (
-              <div className="flex items-center gap-4 bg-ocean-50 px-4 py-2 rounded-lg">
+            {itemCount > 0 && (
+              <Link
+                href="/cart"
+                className="flex items-center gap-4 bg-ocean-50 px-4 py-2 rounded-lg hover:bg-ocean-100 transition-colors"
+              >
                 <span className="text-sm font-medium text-ocean-800">
-                  {cart.length} selected
+                  {itemCount} selected
                 </span>
                 <span className="text-sm font-bold text-teal-600">
-                  ${getPrice()}
+                  ${totalPrice}
                 </span>
-                <button className="btn-primary py-2 px-4 text-sm">
-                  Checkout
-                </button>
-              </div>
+                <span className="btn-primary py-2 px-4 text-sm">
+                  View Cart
+                </span>
+              </Link>
             )}
           </div>
         </div>
@@ -266,15 +264,15 @@ export default function GalleryPage() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleCart(photo.id);
+                      toggleCart(photo);
                     }}
                     className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
-                      cart.includes(photo.id)
+                      isInCart(String(photo.id))
                         ? "bg-teal-500 text-white"
                         : "bg-white/80 text-ocean-600 hover:bg-white"
                     }`}
                   >
-                    {cart.includes(photo.id) ? (
+                    {isInCart(String(photo.id)) ? (
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
@@ -340,14 +338,14 @@ export default function GalleryPage() {
                 </div>
 
                 <button
-                  onClick={() => toggleCart(selectedPhoto.id)}
+                  onClick={() => toggleCart(selectedPhoto)}
                   className={`w-full py-3 rounded-xl font-semibold transition-colors ${
-                    cart.includes(selectedPhoto.id)
+                    isInCart(String(selectedPhoto.id))
                       ? "bg-teal-500 text-white hover:bg-teal-600"
                       : "bg-ocean-800 text-white hover:bg-ocean-700"
                   }`}
                 >
-                  {cart.includes(selectedPhoto.id) ? "Remove from Cart" : "Add to Cart"}
+                  {isInCart(String(selectedPhoto.id)) ? "Remove from Cart" : "Add to Cart"}
                 </button>
 
                 <div className="mt-auto pt-6 border-t border-sand-200">
