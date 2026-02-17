@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -19,28 +19,38 @@ function SuccessContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    clearCart();
+  const hasFetched = useRef(false);
+  const hasCleared = useRef(false);
 
-    if (sessionId) {
-      fetch(`/api/order-details?session_id=${sessionId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            setError(data.error);
-          } else {
-            setOrderDetails(data);
-          }
-          setLoading(false);
-        })
-        .catch(() => {
-          setError("Failed to load order details");
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
+  useEffect(() => {
+    if (!hasCleared.current) {
+      hasCleared.current = true;
+      clearCart();
     }
-  }, [sessionId, clearCart]);
+
+    if (hasFetched.current || !sessionId) {
+      if (!sessionId) setLoading(false);
+      return;
+    }
+
+    hasFetched.current = true;
+
+    fetch(`/api/order-details?session_id=${sessionId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setOrderDetails(data);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        setError("Failed to load order details");
+        setLoading(false);
+      });
+  }, [sessionId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
