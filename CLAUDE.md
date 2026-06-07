@@ -11,9 +11,10 @@ In-water surf photography site that sells photos via Stripe Checkout.
 
 ## Accounts (IMPORTANT — they're split)
 - **Stripe** "Waterdog Productions" → under **Chase's** Google login
-  `mehlerc12@gmail.com`. Currently **TEST mode** (`sk_test_…`). Test webhook
-  ("Waterdog photo order fulfillment") → `/api/webhooks/stripe`,
-  event `checkout.session.completed`.
+  `mehlerc12@gmail.com`. **LIVE** as of 2026-06-07 (`sk_live_…`, live account
+  `acct_1T1H2mJx1eLWFv3c`). Live webhook → `/api/webhooks/stripe`,
+  event `checkout.session.completed`. (Earlier sandbox testing used a SEPARATE
+  account `acct_1T1H2wF6F11OaxXc`.)
 - **Resend** → also under **Chase's** `mehlerc12@gmail.com` (separate from
   Brian's Resend account). Domain `waterdogproductions.com` verified; sends from
   `orders@waterdogproductions.com`, reply-to `mehlerc12@gmail.com`.
@@ -44,12 +45,14 @@ In-water surf photography site that sells photos via Stripe Checkout.
   the warm build finishes in ~50-100s.
 - Gallery uses plain `<img>` (not Next `<Image>`) to avoid exposing Sanity URLs.
 
-## TODO / not done yet (as of 2026-06-07)
-1. **Go live:** activate Stripe (business details + bank), switch Vercel
-   `STRIPE_SECRET_KEY` → `sk_live`, create a **live** webhook (new `whsec`) and
-   update `STRIPE_WEBHOOK_SECRET`. Test and live are fully separate in Stripe.
-2. **Rebrand the confirmation email** (`src/lib/email.ts`) — currently plain;
-   match the ocean/teal brand.
+## Status (2026-06-07): LIVE 🎉
+Store is taking real money. Stripe live, branded email shipped, $8 / 5-for-$30
+pricing live. Full flow verified end to end with a real purchase.
+
+### Optional / later
+- Clean up TEST-mode order docs in Sanity (sandbox + first live test).
+- Sales tax (Stripe Tax) skipped at activation — revisit if nexus thresholds
+  require it (would need `automatic_tax` added to `api/checkout/route.ts`).
 
 ## Guides for Chase (PDF + source HTML)
 - `docs/guides/uploading-photos-cheatsheet.pdf` — how to upload photos in Studio
