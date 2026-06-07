@@ -62,11 +62,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const itemCount = items.length;
 
-  // $5 each or 5 for $20
+  // $8 each or 5 for $30
   const totalPrice = (() => {
     const bundles = Math.floor(itemCount / 5);
     const remainder = itemCount % 5;
-    return bundles * 20 + remainder * 5;
+    return bundles * 30 + remainder * 8;
   })();
 
   return (

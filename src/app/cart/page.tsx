@@ -12,7 +12,7 @@ export default function CartPage() {
 
   const bundles = Math.floor(itemCount / 5);
   const remainder = itemCount % 5;
-  const savings = itemCount >= 5 ? bundles * 5 : 0;
+  const savings = itemCount >= 5 ? bundles * 10 : 0;
 
   const handleCheckout = async () => {
     if (!email || !email.includes("@")) {
@@ -187,9 +187,9 @@ export default function CartPage() {
                   <div className="space-y-3 mb-4">
                     <div className="flex justify-between text-sm">
                       <span className="text-ocean-600">
-                        {itemCount} photo{itemCount !== 1 ? "s" : ""} x $5
+                        {itemCount} photo{itemCount !== 1 ? "s" : ""} x $8
                       </span>
-                      <span className="text-ocean-800">${itemCount * 5}</span>
+                      <span className="text-ocean-800">${itemCount * 8}</span>
                     </div>
 
                     {savings > 0 && (
@@ -211,7 +211,7 @@ export default function CartPage() {
 
                     {itemCount > 0 && itemCount < 5 && (
                       <p className="text-xs text-teal-600">
-                        Add {5 - itemCount} more to get 5 for $20!
+                        Add {5 - itemCount} more to get 5 for $30!
                       </p>
                     )}
                   </div>

@@ -20,7 +20,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Waterdog Productions | In-Water Surf Photography | Huntington Beach",
   description:
-    "Professional in-water surf photography in Huntington Beach, Newport, San Clemente, and Laguna. Capturing your best moments from inside the waves. $5/image or 5 for $20.",
+    "Professional in-water surf photography in Huntington Beach, Newport, San Clemente, and Laguna. Capturing your best moments from inside the waves. $8/image or 5 for $30.",
   keywords: [
     "surf photography",
     "Huntington Beach",

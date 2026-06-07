@@ -13,11 +13,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No items in cart" }, { status: 400 });
     }
 
-    // Calculate pricing: $5 each or 5 for $20
+    // Calculate pricing: $8 each or 5 for $30
     const count = items.length;
     const bundles = Math.floor(count / 5);
     const remainder = count % 5;
-    const totalAmount = bundles * 20 + remainder * 5;
+    const totalAmount = bundles * 30 + remainder * 8;
 
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
       {
@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
             name: `Surf Photos (${count} image${count !== 1 ? "s" : ""})`,
             description:
               bundles > 0
-                ? `${bundles} bundle${bundles !== 1 ? "s" : ""} of 5 ($20 each)${remainder > 0 ? ` + ${remainder} individual ($5 each)` : ""}`
-                : `${count} photo${count !== 1 ? "s" : ""} at $5 each`,
+                ? `${bundles} bundle${bundles !== 1 ? "s" : ""} of 5 ($30 each)${remainder > 0 ? ` + ${remainder} individual ($8 each)` : ""}`
+                : `${count} photo${count !== 1 ? "s" : ""} at $8 each`,
           },
           unit_amount: totalAmount * 100,
         },

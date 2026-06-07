@@ -197,9 +197,9 @@ export default function GalleryPage() {
         <div className="container-custom px-6 md:px-8 lg:px-12">
           <div className="flex items-center justify-center gap-4 text-sm">
             <span className="text-ocean-700">Pricing:</span>
-            <span className="font-semibold text-ocean-900">$5/image</span>
+            <span className="font-semibold text-ocean-900">$8/image</span>
             <span className="text-ocean-400">|</span>
-            <span className="font-semibold text-teal-600">5 for $20</span>
+            <span className="font-semibold text-teal-600">5 for $30</span>
             <span className="text-ocean-600 hidden md:inline">(Best Value!)</span>
           </div>
         </div>
@@ -331,10 +331,10 @@ export default function GalleryPage() {
                 <div className="mb-6 p-4 bg-sand-50 rounded-xl">
                   <p className="text-sm text-ocean-600 mb-2">Pricing</p>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold text-ocean-900">$5</span>
+                    <span className="text-2xl font-bold text-ocean-900">$8</span>
                     <span className="text-ocean-600">/image</span>
                   </div>
-                  <p className="text-sm text-teal-600 mt-1">Buy 5 for $20</p>
+                  <p className="text-sm text-teal-600 mt-1">Buy 5 for $30</p>
                 </div>
 
                 <button

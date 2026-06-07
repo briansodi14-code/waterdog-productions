@@ -135,9 +135,9 @@ export default async function Home() {
               <div className="mt-8 md:mt-10 opacity-0 animate-fade-in animation-delay-600">
                 <span className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 backdrop-blur-sm rounded-full text-white/90 border border-white/20 text-sm">
                   <span>Photos starting at</span>
-                  <span className="font-display font-bold text-teal-400">$5/image</span>
+                  <span className="font-display font-bold text-teal-400">$8/image</span>
                   <span className="text-white/40">|</span>
-                  <span className="font-display font-bold text-teal-400">5 for $20</span>
+                  <span className="font-display font-bold text-teal-400">5 for $30</span>
                 </span>
               </div>
             </div>

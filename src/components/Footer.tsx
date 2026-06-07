@@ -128,7 +128,7 @@ export default function Footer() {
           <div className="mt-12 pt-8 border-t border-white/10">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <p className="text-white/50 text-sm">
-                Photos: <span className="text-teal-400 font-semibold">$5/image</span> or <span className="text-teal-400 font-semibold">5 for $20</span>
+                Photos: <span className="text-teal-400 font-semibold">$8/image</span> or <span className="text-teal-400 font-semibold">5 for $30</span>
               </p>
               <p className="text-white/40 text-xs">
                 &copy; {new Date().getFullYear()} Waterdog Productions. All rights reserved.
