@@ -5,9 +5,15 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
+interface DownloadLink {
+  photoId: string;
+  url: string;
+}
+
 interface OrderDetails {
   email: string;
   photoIds: string[];
+  downloads: DownloadLink[];
   amount: number;
 }
 
@@ -124,16 +130,16 @@ function SuccessContent() {
                   version.
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {orderDetails.photoIds.map((photoId) => (
+                  {orderDetails.downloads.map((download) => (
                     <a
-                      key={photoId}
-                      href={`/api/download/${photoId}`}
+                      key={download.photoId}
+                      href={download.url}
                       download
                       className="block relative group"
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={`/api/watermark/${photoId}?w=400`}
+                        src={`/api/watermark/${download.photoId}?w=400`}
                         alt="Purchased photo"
                         className="w-full aspect-square object-cover rounded-lg"
                       />
