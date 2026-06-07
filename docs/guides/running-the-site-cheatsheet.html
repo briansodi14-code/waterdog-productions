@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Waterdog Productions — Running the Site</title>
+<style>
+  :root {
+    --ocean-950: #0a1b2a;
+    --ocean-900: #0f2942;
+    --ocean-700: #1d4d73;
+    --ocean-600: #2b6593;
+    --teal: #0d9488;
+    --teal-light: #14b8a6;
+    --sand-50: #faf7f0;
+    --sand-100: #f3ecdd;
+    --slate: #475569;
+    --line: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  @page { size: letter; margin: 0; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ocean-900);
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .page {
+    width: 8.5in; min-height: 11in;
+    padding: 0.55in 0.6in 0.6in; margin: 0 auto;
+    page-break-after: always; position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .masthead {
+    background: linear-gradient(135deg, var(--ocean-950), var(--ocean-700));
+    color: #fff; border-radius: 14px; padding: 20px 26px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .masthead .brand {
+    font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--teal-light); font-weight: 700; margin-bottom: 4px;
+  }
+  .masthead h1 { font-size: 26px; margin: 0; font-weight: 800; letter-spacing: -0.4px; }
+  .masthead .for { text-align: right; font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.5; }
+  .masthead .for strong { color: #fff; font-size: 14px; }
+
+  .intro { margin: 16px 2px 18px; font-size: 13.5px; color: var(--slate); line-height: 1.5; }
+
+  .seclabel { display: flex; align-items: center; gap: 8px; margin: 18px 0 12px; }
+  .seclabel:first-of-type { margin-top: 0; }
+  .seclabel .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); }
+  .seclabel h2 {
+    font-size: 15px; margin: 0; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--ocean-700);
+  }
+
+  /* Flow row (numbered horizontal) */
+  .flow { display: flex; gap: 8px; margin-bottom: 20px; }
+  .flow .node {
+    flex: 1; background: var(--sand-50); border: 1px solid var(--line);
+    border-radius: 10px; padding: 11px 10px; text-align: center; position: relative;
+  }
+  .flow .node .n {
+    width: 22px; height: 22px; background: var(--teal); color: #fff;
+    border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 12px; margin-bottom: 6px;
+  }
+  .flow .node .t { font-weight: 700; font-size: 11.5px; line-height: 1.3; margin-bottom: 2px; }
+  .flow .node .s { font-size: 10px; color: var(--slate); line-height: 1.3; }
+
+  .step {
+    display: flex; gap: 14px; padding: 12px 16px; background: var(--sand-50);
+    border: 1px solid var(--line); border-left: 4px solid var(--teal);
+    border-radius: 10px; margin-bottom: 9px;
+  }
+  .step .ic {
+    flex: 0 0 26px; height: 26px; background: var(--teal); color: #fff;
+    border-radius: 7px; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 13px;
+  }
+  .step .body { flex: 1; }
+  .step .body .t { font-weight: 700; font-size: 13.5px; margin-bottom: 2px; }
+  .step .body .d { font-size: 12.5px; color: var(--slate); line-height: 1.5; }
+  .step .body .d b { color: var(--ocean-700); }
+
+  .url, .code {
+    display: inline-block; background: var(--sand-100); color: var(--ocean-700);
+    font-weight: 700; padding: 1px 7px; border-radius: 6px;
+    font-family: "SF Mono", Menlo, monospace; font-size: 12px;
+  }
+  .pill {
+    display: inline-block; background: var(--ocean-700); color: #fff; font-size: 11px;
+    font-weight: 700; padding: 1px 7px; border-radius: 5px; vertical-align: middle;
+  }
+  .tag {
+    display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 7px;
+    border-radius: 5px; vertical-align: middle;
+  }
+  .tag.paid { background: #dcfce7; color: #166534; }
+  .tag.fulfilled { background: #dbeafe; color: #1e40af; }
+  .tag.refunded { background: #fee2e2; color: #991b1b; }
+
+  .tips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+  .tip { background: var(--sand-50); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .tip .h { font-weight: 700; font-size: 12.5px; margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
+  .tip .h .d { color: var(--teal); }
+  .tip .p { font-size: 12px; color: var(--slate); line-height: 1.45; }
+
+  /* Q&A */
+  .qa { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 2px 16px; margin-bottom: 18px; }
+  .qa .item { padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .qa .item:last-child { border-bottom: none; }
+  .qa .q { font-weight: 700; font-size: 12.5px; color: var(--ocean-900); margin-bottom: 3px; }
+  .qa .q::before { content: "Q  "; color: var(--teal); font-weight: 800; }
+  .qa .a { font-size: 12px; color: var(--slate); line-height: 1.5; }
+  .qa .a::before { content: "→  "; color: var(--teal); font-weight: 800; }
+  .qa .a b { color: var(--ocean-700); }
+
+  .warn {
+    background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #f97316;
+    border-radius: 10px; padding: 12px 16px; font-size: 12.5px; color: #7c2d12; line-height: 1.5;
+    margin-bottom: 6px;
+  }
+  .warn b { color: #9a3412; }
+  .ok {
+    background: #f0fdfa; border: 1px solid #99f6e4; border-left: 4px solid var(--teal);
+    border-radius: 10px; padding: 12px 16px; font-size: 12.5px; color: #134e4a; line-height: 1.5;
+  }
+  .ok b { color: #0f766e; }
+
+  .footer {
+    position: absolute; bottom: 0.4in; left: 0.6in; right: 0.6in;
+    border-top: 1px solid var(--line); padding-top: 8px;
+    font-size: 10.5px; color: #94a3b8; display: flex; justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: Site overview + how a sale works -->
+<div class="page">
+  <div class="masthead">
+    <div>
+      <div class="brand">Waterdog Productions</div>
+      <h1>Running the Site</h1>
+    </div>
+    <div class="for">Site · Stripe · Orders<br><strong>Customer Service</strong></div>
+  </div>
+
+  <p class="intro">
+    The site sells your surf photos and takes payment automatically. This guide covers the
+    big picture: what each page does, how a sale flows from click to download, where the money
+    lands, and how to handle the handful of customer questions you'll actually get.
+  </p>
+
+  <div class="seclabel"><span class="dot"></span><h2>The Pages at a Glance</h2></div>
+  <div class="tips">
+    <div class="tip"><div class="h"><span class="d">●</span> Home</div>
+      <div class="p">The front page. Shows your <b>Featured</b> photos and points people to the gallery and booking.</div></div>
+    <div class="tip"><div class="h"><span class="d">●</span> Gallery</div>
+      <div class="p">Where customers <b>buy</b>. Every photo is watermarked here; they add the ones they want to the cart.</div></div>
+    <div class="tip"><div class="h"><span class="d">●</span> Book a Session</div>
+      <div class="p">Your packages &amp; pricing for hiring you to shoot. Leads come through Contact.</div></div>
+    <div class="tip"><div class="h"><span class="d">●</span> Cart &amp; Checkout</div>
+      <div class="p">Customer reviews picks, enters email, and pays through <b>Stripe</b>. No account needed.</div></div>
+  </div>
+
+  <div class="seclabel"><span class="dot"></span><h2>How a Photo Sale Works</h2></div>
+  <div class="flow">
+    <div class="node"><div class="n">1</div><div class="t">Browse Gallery</div><div class="s">Watermarked previews</div></div>
+    <div class="node"><div class="n">2</div><div class="t">Add to Cart</div><div class="s">$5 each · 5 for $20</div></div>
+    <div class="node"><div class="n">3</div><div class="t">Pay via Stripe</div><div class="s">Card, enters email</div></div>
+    <div class="node"><div class="n">4</div><div class="t">Order Recorded</div><div class="s">Saved automatically</div></div>
+    <div class="node"><div class="n">5</div><div class="t">Gets Photos</div><div class="s">On-screen + email</div></div>
+  </div>
+
+  <div class="ok">
+    <b>Pricing is automatic.</b> The cart charges <b>$5 per photo</b>, or <b>5 photos for $20</b>
+    (the discount applies on its own once they hit 5). You don't set prices per photo.
+  </div>
+
+  <div class="seclabel"><span class="dot"></span><h2>What the Customer Receives</h2></div>
+  <div class="step">
+    <div class="ic">A</div>
+    <div class="body"><div class="t">A success page, right after paying</div>
+      <div class="d">Shows their photos with <b>Download</b> buttons for the full-resolution,
+        watermark-free files.</div></div>
+  </div>
+  <div class="step">
+    <div class="ic">B</div>
+    <div class="body"><div class="t">A confirmation email with the same download links</div>
+      <div class="d">Sent automatically so they can download later, even if they close the tab.
+        The email tells them to keep it.</div></div>
+  </div>
+
+  <div class="footer">
+    <span>Waterdog Productions · Running the Site</span><span>Page 1 of 3</span>
+  </div>
+</div>
+
+<!-- PAGE 2: Stripe + Orders -->
+<div class="page">
+  <div class="seclabel"><span class="dot"></span><h2>Stripe — Where the Money Lives</h2></div>
+  <p class="intro" style="margin-top:0;">
+    <b>Stripe</b> is the payment processor. Every card payment, payout to your bank, and refund
+    happens in the Stripe Dashboard at <span class="url">dashboard.stripe.com</span>.
+  </p>
+  <div class="step">
+    <div class="ic">$</div>
+    <div class="body"><div class="t">Payments</div>
+      <div class="d">Dashboard → <b>Payments</b> lists every sale: amount, customer email, and date.
+        Each one links to its details.</div></div>
+  </div>
+  <div class="step">
+    <div class="ic">↗</div>
+    <div class="body"><div class="t">Payouts</div>
+      <div class="d">Stripe automatically deposits your balance to your bank on a rolling schedule
+        (Dashboard → <b>Payouts</b>). Nothing to do — just confirm your bank is connected.</div></div>
+  </div>
+  <div class="step">
+    <div class="ic">↺</div>
+    <div class="body"><div class="t">Refunds</div>
+      <div class="d">Open the payment → <b>Refund</b>. You can refund the full amount or part of it.
+        The customer gets their money back in a few days.</div></div>
+  </div>
+  <div class="warn">
+    <b>Test mode vs. Live mode.</b> Stripe has a toggle (top of the Dashboard). <b>Live</b> = real
+    money. If a test purchase didn't charge a real card, you were in Test mode. Make sure the site
+    runs on <b>Live</b> keys when you're truly selling.
+  </div>
+
+  <div class="seclabel"><span class="dot"></span><h2>Orders — Your Record of Every Sale</h2></div>
+  <p class="intro" style="margin-top:0;">
+    Beyond Stripe, every paid order is saved in your <b>Sanity Studio</b> at
+    <span class="url">waterdogproductions.com/studio</span> → <b>Orders</b>. This is your
+    quick reference for who bought what.
+  </p>
+  <div class="step">
+    <div class="ic">▦</div>
+    <div class="body"><div class="t">Each order shows</div>
+      <div class="d">Customer email, which photos they bought, the amount paid, the date, and a
+        <b>status</b>.</div></div>
+  </div>
+  <div class="qa">
+    <div class="item">
+      <div class="q" style="margin-bottom:5px;">What the statuses mean</div>
+      <div class="a" style="margin-bottom:0;">
+        <span class="tag paid">Paid</span> they paid, links are active &nbsp;·&nbsp;
+        <span class="tag fulfilled">Fulfilled</span> optional — you marked it handled &nbsp;·&nbsp;
+        <span class="tag refunded">Refunded</span> money returned, downloads cut off
+      </div>
+    </div>
+  </div>
+  <div class="warn">
+    <b>Refunding? Do both steps.</b> Refund the payment in <b>Stripe</b>, then open that order in
+    <b>Orders</b> and set its status to <span class="tag refunded">Refunded</span>. That second step
+    is what <b>disables their download links</b> so a refunded customer can't keep grabbing the files.
+  </div>
+
+  <div class="footer">
+    <span>Waterdog Productions · Running the Site</span><span>Page 2 of 3</span>
+  </div>
+</div>
+
+<!-- PAGE 3: Customer service -->
+<div class="page">
+  <div class="seclabel"><span class="dot"></span><h2>Customer Service — The Common Questions</h2></div>
+  <p class="intro" style="margin-top:0;">
+    Most messages fall into a few buckets. Here's the quick fix for each. Your support address is
+    <span class="url">mehlerc12@gmail.com</span>.
+  </p>
+
+  <div class="qa">
+    <div class="item">
+      <div class="q">"I paid but didn't get an email."</div>
+      <div class="a">First have them check <b>spam/junk</b>. Confirm the sale in <b>Stripe → Payments</b>
+        (or <b>Orders</b> in Studio). If it's real, the fastest fix is to <b>email them the photos
+        directly</b>: open each photo in Studio, download the original, and send it.</div>
+    </div>
+    <div class="item">
+      <div class="q">"My download link won't work / I lost it."</div>
+      <div class="a">Links can expire from their inbox or get mangled. Confirm the order, then
+        <b>send the original files directly</b> from Studio (as above). This always works and needs
+        no link.</div>
+    </div>
+    <div class="item">
+      <div class="q">"I want a refund."</div>
+      <div class="a">Refund in <b>Stripe</b>, then mark the order <span class="tag refunded">Refunded</span>
+        in Studio so the links stop working. Use your judgment on partial vs. full.</div>
+    </div>
+    <div class="item">
+      <div class="q">"Which photo is mine? / Can you find my order?"</div>
+      <div class="a">Search <b>Orders</b> by their <b>email</b>. It lists exactly which photos they
+        bought and what they paid.</div>
+    </div>
+    <div class="item">
+      <div class="q">"The photo still has a watermark."</div>
+      <div class="a">They're looking at the <b>gallery preview</b>, not their purchased file. The
+        watermark-free version is behind the <b>Download</b> button on the success page / email.</div>
+    </div>
+    <div class="item">
+      <div class="q">"Do you do custom shoots?"</div>
+      <div class="a">Point them to <b>Book a Session</b> for packages, and have them reach out via
+        <b>Contact</b>.</div>
+    </div>
+  </div>
+
+  <div class="seclabel"><span class="dot"></span><h2>The One Move That Solves Most Issues</h2></div>
+  <div class="ok">
+    <b>Send the originals directly.</b> If anything goes sideways with links or email, you can always
+    open the customer's photos in <b>Studio</b>, download the full-resolution originals, and email
+    them yourself. Confirm they actually paid (Stripe or Orders) first — then deliver. Done.
+  </div>
+
+  <div class="seclabel" style="margin-top:18px;"><span class="dot"></span><h2>When to Loop in Brian</h2></div>
+  <div class="tips">
+    <div class="tip"><div class="h"><span class="d">●</span> Site is down / errors</div>
+      <div class="p">Checkout won't load, gallery is blank, or a customer reports an error page.</div></div>
+    <div class="tip"><div class="h"><span class="d">●</span> Payment looks wrong</div>
+      <div class="p">A charge for the wrong amount, a duplicate, or a dispute/chargeback in Stripe.</div></div>
+  </div>
+
+  <div class="footer">
+    <span>Waterdog Productions · Running the Site</span><span>Page 3 of 3</span>
+  </div>
+</div>
+
+</body>
+</html>
