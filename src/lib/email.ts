@@ -63,6 +63,7 @@ export async function sendOrderConfirmation(
   await resend.emails.send({
     from,
     to: params.to,
+    replyTo: SUPPORT_EMAIL,
     subject: `Your Waterdog Productions photos (${count} photo${count !== 1 ? "s" : ""})`,
     html,
   });
