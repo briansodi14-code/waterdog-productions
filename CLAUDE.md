@@ -57,3 +57,10 @@ pricing live. Full flow verified end to end with a real purchase.
 ## Guides for Chase (PDF + source HTML)
 - `docs/guides/uploading-photos-cheatsheet.pdf` — how to upload photos in Studio
 - `docs/guides/running-the-site-cheatsheet.pdf` — site, Stripe, orders, customer service
+
+## Cross-machine session protocol
+- START of session: run `git pull` first — another computer may have pushed.
+- END of session ("wrap up"): update `.claude-memory/` (current focus, decisions, in-flight work),
+  then commit and push. Memory files are committed — they sync across machines via git.
+- NEVER put secrets (API keys, tokens, passwords) in CLAUDE.md or `.claude-memory/` — secrets
+  live in `.env` files, which stay gitignored and local.
