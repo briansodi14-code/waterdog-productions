@@ -14,6 +14,11 @@ const footerLinks = {
     "San Clemente",
     "Laguna Beach",
   ],
+  legal: [
+    { href: "/privacy-policy", label: "Privacy Policy" },
+    { href: "/terms", label: "Terms of Service" },
+    { href: "/refund-policy", label: "Refund & Return Policy" },
+  ],
 };
 
 export default function Footer() {
@@ -133,6 +138,18 @@ export default function Footer() {
               <p className="text-white/40 text-xs">
                 &copy; {new Date().getFullYear()} Waterdog Productions. All rights reserved.
               </p>
+            </div>
+            {/* Legal Links */}
+            <div className="mt-6 flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2">
+              {footerLinks.legal.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-white/40 hover:text-teal-400 transition-colors text-xs"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
         </div>
